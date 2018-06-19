@@ -31,11 +31,14 @@ app.get('/groceries', function(req,res){
 
 app.post('/groceries', function(req,res){
     let itemName = req.body.itemName
+    let listName = req.body.listName
     console.log(req.body)
-    db.none('INSERT INTO groceryitem(itemName) VALUES ($1)', [itemName]).then(function(){
+    db.one('INSERT INTO shoppinglist(listName) VALUES($1) RETURNING shoppingListID', [listName]).then(function(){
         res.redirect('/groceries')
     })
-    
+    db.none('INSERT INTO groceryitem(itemName) VALUES($1)', [itemName]).then(function(){
+        res.redirect('/groceries')
+    })
 })
 
 app.listen(3000, () => console.log('App listening on port 3000'))
